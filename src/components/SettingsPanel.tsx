@@ -8,6 +8,7 @@ import { useStore } from "@/store/useStore";
 import { STATES } from "@/constants/states";
 import { TAX_YEARS } from "@/constants/taxBrackets";
 import { exportSchema } from "@/lib/schema";
+import { buildScenarioCsv, downloadCsv, safeFileName } from "@/lib/csv";
 
 export function SettingsPanel() {
   const active = useStore((s) => s.getActive());
@@ -50,6 +51,12 @@ export function SettingsPanel() {
     if (confirm("Reset all scenarios and settings? This cannot be undone.")) {
       resetAll();
     }
+  };
+
+  const onExportCsv = () => {
+    const csv = buildScenarioCsv(active);
+    const date = new Date().toISOString().slice(0, 10);
+    downloadCsv(`income-projection-${safeFileName(active.name)}-${date}.csv`, csv);
   };
 
   return (
@@ -144,8 +151,9 @@ export function SettingsPanel() {
           <CardDescription>Everything is local. Export anywhere, import to migrate.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
             <Button onClick={onExport} variant="outline">Export JSON</Button>
+            <Button onClick={onExportCsv} variant="outline">Export CSV (monthly)</Button>
             <label className="inline-flex">
               <input
                 type="file"
@@ -163,6 +171,9 @@ export function SettingsPanel() {
             </label>
             <Button variant="destructive" onClick={onReset}>Reset all</Button>
           </div>
+          <p className="text-xs text-muted-foreground">
+            CSV columns: month_index, month (YYYY-MM), total_gross, total_net, total_principal, monthly_expenses, surplus, then per-source gross/net/principal.
+          </p>
           <p className="text-xs text-muted-foreground">
             Data is stored in your browser's localStorage. Nothing leaves your device.
           </p>
