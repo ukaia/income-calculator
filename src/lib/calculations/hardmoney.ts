@@ -9,8 +9,8 @@ export function projectHardMoney(s: HardMoneySource, ctx: ProjectionContext): So
   const expectedLoss = s.defaultProbPct * (1 - s.recoveryRatePct);
   const monthlyRate = s.annualRate / 12;
   const origination = s.principal * s.originationPct;
-  const ordinaryRate = topRate(ctx);
-  const stateRate = ctx.stateRateOverride;
+  const ordinaryRate = ctx.taxesEnabled ? topRate(ctx) : 0;
+  const stateRate = ctx.taxesEnabled ? ctx.stateRateOverride : 0;
   const taxRate = ordinaryRate + stateRate;
 
   // Amortized monthly payment formula

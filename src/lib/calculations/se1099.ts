@@ -9,10 +9,12 @@ export function projectSE1099(s: SE1099Source, ctx: ProjectionContext): SourcePr
 
   const annualGross = s.grossMonthly * 12;
   const netEarnings = annualGross * (1 - s.businessExpensePct);
-  const seCalc = computeSETax(netEarnings, ctx.year);
+  const seCalc = ctx.taxesEnabled
+    ? computeSETax(netEarnings, ctx.year)
+    : { seTax: 0, employerHalfDeduction: 0, ss: 0, medicare: 0 };
   const taxableAfterSEDed = Math.max(0, netEarnings - seCalc.employerHalfDeduction);
-  const fed = taxableAfterSEDed * s.fedEffectiveRate;
-  const state = s.noStateTax ? 0 : taxableAfterSEDed * s.stateRate;
+  const fed = ctx.taxesEnabled ? taxableAfterSEDed * s.fedEffectiveRate : 0;
+  const state = ctx.taxesEnabled && !s.noStateTax ? taxableAfterSEDed * s.stateRate : 0;
   const totalAnnualTax = seCalc.seTax + fed + state;
   const netMonthly = (netEarnings - totalAnnualTax) / 12;
 

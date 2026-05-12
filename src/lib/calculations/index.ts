@@ -17,6 +17,7 @@ export function buildContext(settings: Settings, horizonMonthsOverride?: number)
     year,
     stateRateOverride: stateRow?.estTopRate ?? 0,
     inflationPct: settings.inflationPct,
+    taxesEnabled: settings.taxesEnabled ?? true,
   };
 }
 

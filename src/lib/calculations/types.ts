@@ -25,4 +25,5 @@ export interface ProjectionContext {
   year: import("@/constants/taxBrackets").YearBrackets;
   stateRateOverride: number; // top marginal estimate
   inflationPct: number;
+  taxesEnabled: boolean;
 }

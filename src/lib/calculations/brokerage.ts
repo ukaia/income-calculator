@@ -25,9 +25,9 @@ export function projectBrokerage(
 
   let principal = s.startingPrincipal;
   let costBasis = s.costBasis || s.startingPrincipal;
-  const ordinaryRate = topRate(ctx);
-  const ltcgRate = 0.15;
-  const stateRate = ctx.stateRateOverride;
+  const ordinaryRate = ctx.taxesEnabled ? topRate(ctx) : 0;
+  const ltcgRate = ctx.taxesEnabled ? 0.15 : 0;
+  const stateRate = ctx.taxesEnabled ? ctx.stateRateOverride : 0;
 
   for (let m = 0; m < ctx.horizonMonths; m++) {
     let returnRate = baseMonthlyReturn;

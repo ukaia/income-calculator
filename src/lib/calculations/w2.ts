@@ -27,9 +27,9 @@ export function projectW2(s: W2Source, ctx: ProjectionContext): SourceProjection
     const taxableMonthly = Math.max(0, grossMonthly - pretax401k - hsa - health);
     const annualTaxable = taxableMonthly * 12;
 
-    const fed = annualTaxable * s.fedRate;
-    const state = s.noStateTax ? 0 : annualTaxable * s.stateRate;
-    const fica = computeFICA(grossMonthly * 12, ctx.filingStatus, ctx.year).total;
+    const fed = ctx.taxesEnabled ? annualTaxable * s.fedRate : 0;
+    const state = ctx.taxesEnabled && !s.noStateTax ? annualTaxable * s.stateRate : 0;
+    const fica = ctx.taxesEnabled ? computeFICA(grossMonthly * 12, ctx.filingStatus, ctx.year).total : 0;
     const totalAnnualTax = fed + state + fica;
     const netMonthly = Math.max(0, taxableMonthly - totalAnnualTax / 12);
 

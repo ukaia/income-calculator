@@ -64,6 +64,7 @@ export function Dashboard() {
         <p className="text-sm text-muted-foreground">
           {active.sources.filter((s) => s.enabled).length} active source{active.sources.filter((s) => s.enabled).length === 1 ? "" : "s"}
           {settings.viewRealDollars ? " · real $ view" : " · nominal $ view"}
+          {settings.taxesEnabled ? "" : " · taxes off"}
         </p>
       </div>
 

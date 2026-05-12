@@ -7,11 +7,10 @@ export function projectDividend(s: DividendSource, ctx: ProjectionContext): Sour
   const nets: number[] = [];
 
   let principal = s.principal;
-  // Tax: qualified at 15% (a reasonable LTCG estimate), ordinary at marginal
-  // We use ctx top bracket for ordinary portion.
-  const ordinaryRate = topRate(ctx);
-  const qualifiedRate = 0.15;
-  const stateRate = ctx.stateRateOverride;
+  // Tax: qualified at 15% (a reasonable LTCG estimate), ordinary at marginal.
+  const ordinaryRate = ctx.taxesEnabled ? topRate(ctx) : 0;
+  const qualifiedRate = ctx.taxesEnabled ? 0.15 : 0;
+  const stateRate = ctx.taxesEnabled ? ctx.stateRateOverride : 0;
 
   const monthlyGrowth = Math.pow(1 + s.growthPct, 1 / 12) - 1;
 

@@ -123,6 +123,18 @@ export function SettingsPanel() {
               <Switch checked={active.settings.darkMode} onCheckedChange={(v) => update({ darkMode: v })} />
             </div>
           </Field>
+          <Field label="Taxes" help="Turn off to model gross income only. Pretax payroll deductions (401k, HSA, health premium) still reduce paycheck take-home since they're not taxes.">
+            <div className="flex items-center h-11 gap-3">
+              <Switch
+                checked={active.settings.taxesEnabled}
+                onCheckedChange={(v) => update({ taxesEnabled: v })}
+                aria-label="Apply taxes"
+              />
+              <span className="text-sm text-muted-foreground">
+                {active.settings.taxesEnabled ? "On" : "Off — net shows pre-tax"}
+              </span>
+            </div>
+          </Field>
         </CardContent>
       </Card>
 

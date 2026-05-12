@@ -117,6 +117,7 @@ export const settingsSchema = z.object({
   goalMonthlyNetIncome: z.number().nonnegative().default(0),
   darkMode: z.boolean().default(false),
   horizonYears: z.number().int().min(1).max(50).default(10),
+  taxesEnabled: z.boolean().default(true),
 });
 export type Settings = z.infer<typeof settingsSchema>;
 

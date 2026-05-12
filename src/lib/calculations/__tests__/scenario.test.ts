@@ -53,4 +53,21 @@ describe("full scenario aggregate", () => {
     const endingPrincipal = data.totalPrincipalByMonth[data.totalPrincipalByMonth.length - 1];
     expect(endingPrincipal).toBeGreaterThan(startPrincipal * 1.2);
   });
+
+  it("taxes off: net increases for every income-producing source", () => {
+    const taxedData = aggregate(projectAll(sources, settings));
+    const noTaxData = aggregate(projectAll(sources, { ...settings, taxesEnabled: false }));
+    // Sum of net over horizon must be higher when taxes are off
+    const taxedSum = taxedData.totalNetByMonth.reduce((a, b) => a + b, 0);
+    const noTaxSum = noTaxData.totalNetByMonth.reduce((a, b) => a + b, 0);
+    expect(noTaxSum).toBeGreaterThan(taxedSum);
+  });
+
+  it("taxes off on a pure W2: net month 1 equals gross minus pretax deductions only", () => {
+    const w2Only = [sources[0]];
+    const data = aggregate(projectAll(w2Only, { ...settings, taxesEnabled: false }));
+    // W2 gross biweekly 5000 -> monthly 5000*26/12 ≈ 10833.33; pretax 6% = 650
+    // Expected net (no tax): 10833.33 - 650 = 10183.33
+    expect(data.totalNetByMonth[0]).toBeCloseTo(10183.33, 0);
+  });
 });
